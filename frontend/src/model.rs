@@ -13,6 +13,8 @@ pub use View::*;
 
 pub struct Inputs {
     pub project_name: ProjectName,
+    pub worker_name:  WorkerName,
+    pub task_name:    TaskName,
 }
 
 pub struct Model {
@@ -34,6 +36,8 @@ impl Model {
             view: NullView,
             inputs: Inputs {
                 project_name: ProjectName("".into()),
+                worker_name:  WorkerName("".into()),
+                task_name:    TaskName("".into()),
             },
         }
     }

@@ -19,6 +19,14 @@ impl Model for Env {
     fn add_task(&mut self, item: NewTask) -> TaskID {
         self.tasks.insert(item)
     }
+    
+    fn delete_project(&self, project_id: ProjectID) -> bool {
+        unimplemented!()
+    }
+    
+    fn delete_worker(&self, worker_id: WorkerID) -> bool {
+        unimplemented!()
+    }
 
     fn get_projects(&self) -> Vec<Project> {
         self.projects.list()

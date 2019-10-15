@@ -42,6 +42,32 @@ impl Model for Env {
             .unwrap();
         return last_id!(tasks::task_id, &db_con);
     }
+    
+    fn delete_project(&self, project_id: ProjectID) -> bool {
+        let db_con = db::open_db();
+        let deleted_rows = diesel::delete(projects::table)
+            .filter(projects::project_id.eq(project_id))
+            .execute(&db_con);
+        if let Ok(1) = deleted_rows {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    fn delete_worker(&self, worker_id: WorkerID) -> bool {
+        let db_con = db::open_db();
+        let deleted_rows = diesel::delete(workers::table)
+            .filter(workers::worker_id.eq(worker_id))
+            .execute(&db_con);
+        if let Ok(1) = deleted_rows {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     fn get_projects(&self) -> Vec<Project> {
         let db_con = db::open_db();

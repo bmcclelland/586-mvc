@@ -62,3 +62,13 @@ pub struct GetProjectsParams;
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct GetWorkersParams;
+
+#[derive(Debug,Clone,Serialize,Deserialize)]
+pub struct DeleteProjectParams {
+    pub project_id: ProjectID,
+}
+
+#[derive(Debug,Clone,Serialize,Deserialize)]
+pub struct DeleteWorkerParams {
+    pub worker_id: WorkerID,
+}

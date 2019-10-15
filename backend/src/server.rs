@@ -18,7 +18,7 @@ fn validate_action(
     )
     -> Option<()>
 {
-    None
+    Some(())
 }
 
 fn handle_action(
@@ -28,6 +28,8 @@ fn handle_action(
     )
     -> Response
 {
+    env.log(&format!("POST: {}", request.raw_url()));
+    
     let action_fn = try_or!(lookup_action_fn(action_name), {
         env.log(&format!("404: no action {} found", action_name));
         return Response::empty_404();
@@ -58,7 +60,6 @@ fn request_handler<EnvT>(
     let env = RwLock::new(env);
 
     move |request| {
-        println!("Request: {}", request.raw_url());
 
         router!(request,
             (POST) (/api/{action_name : String}) => { 
@@ -74,7 +75,10 @@ fn request_handler<EnvT>(
             
             _ => {
                 let env_guard = env.write().unwrap();
-                env_guard.log(&format!("({}) 404: No route", request.method()));
+                env_guard.log(
+                    &format!("{}: {}", request.method(), request.raw_url())
+                );
+                env_guard.log(&format!("404: No route"));
                 Response::empty_404()
             }
         )

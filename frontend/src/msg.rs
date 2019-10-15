@@ -8,15 +8,21 @@ use crate::model::*;
 
 pub enum Msg {
     Noop,
+    FetchFailed(i32),
     GetProjects,
     GetWorkers,
     GetTasks,
     AddProject,
+    AddWorker,
+    AddTask,
+    DeleteProject(ProjectID),
+    DeleteWorker(WorkerID),
+    ViewProjects(Vec<Project>),
     ViewWorkers(Vec<Worker>),
     ViewTasks(Vec<Task>),
-    FetchFailed(i32),
     UpdateProjectInput(ProjectName),
-    ViewProjects(Vec<Project>),
+    UpdateWorkerInput(WorkerName),
+    UpdateTaskInput(TaskName,ProjectID),
 }
   
 macro_rules! fetch(
@@ -57,7 +63,9 @@ fn json_request<'a, T>(body: &'a T, action: &str)
 
 pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
     match msg {
-        Msg::Noop => {}
+        Msg::Noop => {
+            // Do absolutely nothing.
+        }
         Msg::FetchFailed(i) => {
             model.debug.push(match i {
                 1 => "FetchFailed1",
@@ -65,10 +73,6 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
                 _ => "FetchFailed?",
             });
             model.task = None;
-        }
-        Msg::UpdateProjectInput(s) => {
-            model.debug.push("UpdateProjectInput");
-            model.inputs.project_name = s;
         }
         Msg::AddProject => {
             model.debug.push("AddProject");
@@ -79,7 +83,49 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
             fetch!(model, req, |_project_id: ProjectID| {
                 Msg::GetProjects
             });
-        },
+            model.inputs.project_name.0.clear();
+        }
+        Msg::AddWorker => {
+            model.debug.push("AddWorker");
+            let params = AddWorkerParams {
+                worker_name: model.inputs.worker_name.clone(),
+            };
+            let req = json_request(&params, "add_worker");
+            fetch!(model, req, |_worker_id: WorkerID| {
+                Msg::GetWorkers
+            });
+            model.inputs.worker_name.0.clear();
+        }
+        Msg::DeleteProject(project_id) => {
+            model.debug.push("DeleteProject");
+            let params = DeleteProjectParams { project_id };
+            let req = json_request(&params, "delete_project");
+            fetch!(model, req, |_success: bool| {
+                Msg::GetProjects
+            });
+        }
+        Msg::DeleteWorker(worker_id) => {
+            model.debug.push("DeleteWorker");
+            let params = DeleteWorkerParams { worker_id };
+            let req = json_request(&params, "delete_worker");
+            fetch!(model, req, |_success: bool| {
+                Msg::GetWorkers
+            });
+        }
+        Msg::AddTask => {
+            unimplemented!()
+        }
+        Msg::UpdateProjectInput(s) => {
+            model.debug.push("UpdateProjectInput");
+            model.inputs.project_name = s;
+        }
+        Msg::UpdateWorkerInput(s) => {
+            model.debug.push("UpdateWorkerInput");
+            model.inputs.worker_name = s;
+        }
+        Msg::UpdateTaskInput(_,_) => {
+            unimplemented!();
+        }
         Msg::ViewProjects(projects) => {
             model.debug.push("ViewProjects");
             model.view = ProjectsView(projects);

@@ -7,12 +7,14 @@ type ActionFn = fn(&Request) -> Option<Box<dyn Action>>;
 // Implement Action for SomeNameAction in actions/some_name.rs.
 // SomeNameParams should be defined in the common crate.
 routable_actions!(
-    add_worker,
-    get_workers,
     add_project,
-    get_projects,
+    add_worker,
     add_task,
+    get_workers,
+    get_projects,
     get_tasks,
+    delete_project,
+    delete_worker,
 );
 
 /////////////////////////////////////
