@@ -60,7 +60,6 @@ fn request_handler<EnvT>(
     let env = RwLock::new(env);
 
     move |request| {
-
         router!(request,
             (POST) (/api/{action_name : String}) => { 
                 let mut env_guard = env.write().unwrap();

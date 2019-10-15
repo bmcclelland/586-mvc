@@ -16,6 +16,7 @@ pub enum Perm {
     ModifyTask,
 }
 
+// Permission requirements. Actions have these.
 #[derive(Debug,PartialEq)]
 pub enum PermReq {
     And(Vec<PermReq>),
@@ -24,6 +25,7 @@ pub enum PermReq {
 }
 
 impl PermReq {
+    // Permission requirements may be satisfied by some set of permissions.
     pub fn satisfied_by(&self, perms: &Vec<Perm>) -> bool {
         use PermReq::*;
         match self {

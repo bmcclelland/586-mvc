@@ -1,6 +1,7 @@
 use common::*;
 use yew::prelude::*;
 use yew::services::fetch::*;
+use yew::services::storage::*;
 
 pub enum View {
     NullView,
@@ -19,6 +20,7 @@ pub struct Inputs {
 
 pub struct Model {
     pub fetcher: FetchService,
+    pub storage: StorageService,
     pub link: ComponentLink<Model>,
     pub debug: Vec<&'static str>,
     pub task: Option<FetchTask>,
@@ -30,6 +32,7 @@ impl Model {
     pub fn new(_: (), link: ComponentLink<Self>) -> Self {
         Self {
             fetcher: FetchService::new(),
+            storage: StorageService::new(Area::Local),
             link: link,
             debug: vec![],
             task: None,

@@ -4,6 +4,9 @@ use crate::data::*;
 use common::*;
 use std::collections::{HashMap, HashSet};
 
+// This code is somewhat of an experiment.
+
+// Something which can be made into a complete database object from a key and some other data. 
 pub trait DBType : Clone {
     type Key: Eq+std::hash::Hash+Copy+Inc;
     type New;
@@ -45,6 +48,7 @@ impl DBType for Task {
     }
 }
 
+// A manager class that wraps a hashmap and handles key uniqueness.
 pub struct Man<T> where T: DBType {
     data: HashMap<T::Key,T>,
     next_k: T::Key,
@@ -76,6 +80,7 @@ impl<T> Man<T> where T: DBType
     }
 }
 
+// The test context.
 pub struct Env {
     pub(super) projects: Man<Project>,
     pub(super) workers:  Man<Worker>,

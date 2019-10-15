@@ -1,6 +1,6 @@
 use backend::*;
 
 fn main() {
-    let env = my::Env::default();
+    let env = prod::Env::new();
     server::serve(env);
 }
