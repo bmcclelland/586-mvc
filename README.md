@@ -19,7 +19,7 @@ This is a standalone REST server using the [Rouille web library](https://docs.rs
 
 ### Types
 #### Model
-This trait represents the data store. It has methods for adding, getting, deleting, etc of the business types. On the production /my module, it's implemented using a database. On the /test module, it's implemented with regular data structures (hash maps, etc).
+This trait represents the data store. It has methods for adding, getting, deleting, etc of the business types. On the /prod module, it's implemented using a database. On the /test module, it's implemented with regular data structures (hash maps, etc).
 
 #### Action
 This trait is for controller actions which are triggered via the API and read or modify the model. Each one is defined as its own module under /actions, and is wired up using macro magic in /actions/mod.rs (listed in routable_actions!()). Each action has an associated (Something)Action type (created by the above macro) which holds a (Something)Params object. Params are what gets deserialized out of the request body.
@@ -35,7 +35,7 @@ This trait is for logging. For now, both the production and test modules impleme
 This trait is not yet developed.
 
 #### Env
-This is the application context. There's no requirement on it, but the server expecs to be handed something that implements the Model and Logger traits. For now this is the extent of any kind of dependency injection. The real one lives in /my and the test one lives in /test.
+This is the application context. There's no requirement on it, but the server expecs to be handed something that implements the Model and Logger traits. For now this is the extent of any kind of dependency injection. The real one lives in /prod and the test one lives in /test.
 
 #### Perm
 A variant type representing a single permission such as CreateProject or ViewTask. Perms are collected into PermReqs, which are nestable All/Any sets. PermReqs can be conveniently constructed with the perms! macro using infix & and | operators.
