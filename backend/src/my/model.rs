@@ -108,12 +108,6 @@ impl Model for Env {
 
     fn get_worker_tasks(&self, worker_id: WorkerID) -> Vec<Task> {
         let db_con = db::open_db();
-//        let wts = workertasks::table.load::<WorkerTask>(&db_con)
-//            .unwrap();
-//        for i in wts {
-//            println!("{:?}", i);
-//        }
-
         let mut rows = tasks::table
             .inner_join(workertasks::table.on(
                 workertasks::task_id.eq(tasks::task_id)
@@ -148,15 +142,3 @@ impl Model for Env {
             .unwrap();
     }
 }
-
-//impl Model for Env {
-//    fn add_record(&mut self, record: User) {
-//        let db_con = db::open_db();
-//        db::add_user(&db_con, record.last_name, record.first_name);
-//        self.data.push(record);
-//    }
-//    
-//    fn get_records(&self) -> Vec<User> {
-//        return self.data.clone();
-//    }
-//}
