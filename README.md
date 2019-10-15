@@ -40,6 +40,14 @@ This is the application context. There's no requirement on it, but the server ex
 #### Perm
 A variant type representing a single permission such as CreateProject or ViewTask. Perms are collected into PermReqs, which are nestable All/Any sets. PermReqs can be conveniently constructed with the perms! macro using infix & and | operators.
 
+### Flow of Actions
+- The router gets a POST request at /api/do_something
+- "do_something" is looked up in the actions table. It maps to the function routers::do_something().
+- This function is called and passed the request object. It deserializes a DoSomethingParams from the request body and puts it into a DoSomethingAction, which gets returned as a dynamic Action.
+- The Action's permissions are checked.
+- The Action is executed on the Model, using its held DoSomethingParams. The call returns a dynamic Serializable object with the result of the Action.
+- The Serializable is sent back in the response body as JSON.
+
 ## common
 Things shared by the frontend and backend, mostly types which get serialized as JSON between them. This contains all the business types like Project, Worker, WorkerID, TaskName, etc.
 
