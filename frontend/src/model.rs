@@ -18,7 +18,7 @@ pub struct Inputs {
 pub struct Model {
     pub fetcher: FetchService,
     pub link: ComponentLink<Model>,
-    pub stuff: Vec<&'static str>,
+    pub debug: Vec<&'static str>,
     pub task: Option<FetchTask>,
     pub view: View,
     pub inputs: Inputs,
@@ -29,7 +29,7 @@ impl Model {
         Self {
             fetcher: FetchService::new(),
             link: link,
-            stuff: vec![],
+            debug: vec![],
             task: None,
             view: NullView,
             inputs: Inputs {

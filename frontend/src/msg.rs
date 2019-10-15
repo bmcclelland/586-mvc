@@ -19,13 +19,6 @@ pub enum Msg {
     ViewProjects(Vec<Project>),
 }
   
-fn test_token() -> JWT {
-    JWT {
-        name: "Person".into(),
-        hash: 8888,
-    }
-}
-
 macro_rules! fetch(
     ($self: ident, $req: ident, $do: expr) => {
         let callback = $self.link.send_back(
@@ -66,7 +59,7 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
     match msg {
         Msg::Noop => {}
         Msg::FetchFailed(i) => {
-            model.stuff.push(match i {
+            model.debug.push(match i {
                 1 => "FetchFailed1",
                 2 => "FetchFailed2",
                 _ => "FetchFailed?",
@@ -74,13 +67,12 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
             model.task = None;
         }
         Msg::UpdateProjectInput(s) => {
-            model.stuff.push("UpdateProjectInput");
+            model.debug.push("UpdateProjectInput");
             model.inputs.project_name = s;
         }
         Msg::AddProject => {
-            model.stuff.push("AddProject");
+            model.debug.push("AddProject");
             let payload = AddProjectPayload {
-                token: test_token(),
                 project_name: model.inputs.project_name.clone(),
             };
             let req = json_request(&payload, "add_project");
@@ -89,39 +81,39 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
             });
         },
         Msg::ViewProjects(projects) => {
-            model.stuff.push("ViewProjects");
+            model.debug.push("ViewProjects");
             model.view = ProjectsView(projects);
             model.task = None;
         }
         Msg::ViewWorkers(body) => {
-            model.stuff.push("ViewWorkers");
+            model.debug.push("ViewWorkers");
             model.view = WorkersView(body);
             model.task = None;
         }
         Msg::ViewTasks(body) => {
-            model.stuff.push("ViewTasks");
+            model.debug.push("ViewTasks");
             model.view = TasksView(body);
             model.task = None;
         }
         Msg::GetProjects => {
-            model.stuff.push("GetProjects");
-            let payload = test_token();
+            model.debug.push("GetProjects");
+            let payload = GetProjectsPayload;
             let req = json_request(&payload, "get_projects");
             fetch!(model, req, |projects: Vec<Project>| {
                 Msg::ViewProjects(projects)
             });
         }
         Msg::GetWorkers => {
-            model.stuff.push("GetWorkers");
-            let payload = test_token();
+            model.debug.push("GetWorkers");
+            let payload = GetWorkersPayload;
             let req = json_request(&payload, "get_workers");
             fetch!(model, req, |workers: Vec<Worker>| {
                 Msg::ViewWorkers(workers)
             });
         }
         Msg::GetTasks => {
-            model.stuff.push("GetTasks");
-            let payload = test_token();
+            model.debug.push("GetTasks");
+            let payload = GetTasksPayload;
             let req = json_request(&payload, "get_tasks");
             fetch!(model, req, |tasks: Vec<Task>| {
                 Msg::ViewTasks(tasks)

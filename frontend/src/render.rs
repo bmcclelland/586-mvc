@@ -23,7 +23,7 @@ fn view_view(model: &Model) -> Html<Model> {
     match &model.view {
         NullView => html! {
             <div>
-                <p>{ "NULL" }</p>
+                <p>{ "(No view)" }</p>
             </div>
         },
         ProjectsView(projects) => html! {

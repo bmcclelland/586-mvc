@@ -1,9 +1,0 @@
-#!/bin/env bash
-
-port=8001
-endpoint=api/get_projects
-body="@get_projects.json"
-ct="application/json"
-
-curl -d "$body" -H "Content-Type: $ct" -X POST "127.0.0.1:$port/$endpoint"
-echo
