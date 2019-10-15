@@ -72,10 +72,10 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
         }
         Msg::AddProject => {
             model.debug.push("AddProject");
-            let payload = AddProjectPayload {
+            let params = AddProjectParams {
                 project_name: model.inputs.project_name.clone(),
             };
-            let req = json_request(&payload, "add_project");
+            let req = json_request(&params, "add_project");
             fetch!(model, req, |_project_id: ProjectID| {
                 Msg::GetProjects
             });
@@ -97,24 +97,24 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
         }
         Msg::GetProjects => {
             model.debug.push("GetProjects");
-            let payload = GetProjectsPayload;
-            let req = json_request(&payload, "get_projects");
+            let params = GetProjectsParams;
+            let req = json_request(&params, "get_projects");
             fetch!(model, req, |projects: Vec<Project>| {
                 Msg::ViewProjects(projects)
             });
         }
         Msg::GetWorkers => {
             model.debug.push("GetWorkers");
-            let payload = GetWorkersPayload;
-            let req = json_request(&payload, "get_workers");
+            let params = GetWorkersParams;
+            let req = json_request(&params, "get_workers");
             fetch!(model, req, |workers: Vec<Worker>| {
                 Msg::ViewWorkers(workers)
             });
         }
         Msg::GetTasks => {
             model.debug.push("GetTasks");
-            let payload = GetTasksPayload;
-            let req = json_request(&payload, "get_tasks");
+            let params = GetTasksParams;
+            let req = json_request(&params, "get_tasks");
             fetch!(model, req, |tasks: Vec<Task>| {
                 Msg::ViewTasks(tasks)
             });

@@ -2,10 +2,10 @@
 use crate::traits::Action;
 type ActionFn = fn(&Request) -> Option<Box<dyn Action>>;
 
-// Listing "some_name" will create a struct SomeNameAction(SomeNamePayload)
+// Listing "some_name" will create a struct SomeNameAction(SomeNameParams)
 //  and wire it to the server router at /api/some_name.
 // Implement Action for SomeNameAction in actions/some_name.rs.
-// Payloads should be defined in the common crate.
+// SomeNameParams should be defined in the common crate.
 routable_actions!(
     add_worker,
     get_workers,

@@ -24,7 +24,7 @@ mod tests {
         
         let count_before = model.get_workers().len();
         let worker_name = WorkerName("test".into());
-        let action = AddWorkerAction(AddWorkerPayload {
+        let action = AddWorkerAction(AddWorkerParams {
             worker_name: worker_name.clone(),
         });
         let worker_id = round_trip(action.execute(model));

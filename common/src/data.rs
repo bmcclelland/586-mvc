@@ -39,26 +39,26 @@ pub struct WorkerTask {
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct AddProjectPayload {
+pub struct AddProjectParams {
     pub project_name: ProjectName,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct AddWorkerPayload {
+pub struct AddWorkerParams {
     pub worker_name: WorkerName,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct AddTaskPayload {
+pub struct AddTaskParams {
     pub task_name: TaskName,
     pub project_id: ProjectID,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct GetTasksPayload;
+pub struct GetTasksParams;
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct GetProjectsPayload;
+pub struct GetProjectsParams;
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct GetWorkersPayload;
+pub struct GetWorkersParams;

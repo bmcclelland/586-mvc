@@ -2,7 +2,7 @@ macro_rules! routable_actions (
     ($($mod: ident),+$(,)?) => {
         // Given $mod = something:
         
-        // Declare each SomethingAction(SomethingPayload).
+        // Declare each SomethingAction(SomethingParams).
         $(procs::action_types!($mod);)+
 
         // Declare each routers::something() which just pulls the

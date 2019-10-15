@@ -23,7 +23,7 @@ mod tests {
         let model = &mut Env::new();
         
         let project_name = ProjectName("test_project".into());
-        let action = AddProjectAction(AddProjectPayload {
+        let action = AddProjectAction(AddProjectParams {
             project_name: project_name.clone(),
         });
         let count_before = model.get_projects().len();

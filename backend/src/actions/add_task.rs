@@ -29,7 +29,7 @@ mod tests {
         
         let count_before = model.get_tasks().len();
         let task_name = TaskName("test".into());
-        let action = AddTaskAction(AddTaskPayload {
+        let action = AddTaskAction(AddTaskParams {
             task_name: task_name.clone(),
             project_id,
         });
