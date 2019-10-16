@@ -36,18 +36,18 @@ fn handle_action(
     });
 
     let action = try_or!(action_fn(request), {
-        env.log(&format!("404: action_fn failed"));
+        env.log("404: action_fn failed");
         return Response::empty_404();
     });
    
-    let _ = try_or!(validate_action(env, &*action), {
-        env.log(&format!("400: Failed to validate"));
+    try_or!(validate_action(env, &*action), {
+        env.log("400: Failed to validate");
         return Response::empty_400();
     });
         
     let response_data : Box<dyn Serialize> = action.execute(env);
-    env.log(&format!("200: Responding"));
-    return Response::json(&response_data)
+    env.log("200: Responding");
+    Response::json(&response_data)
         .with_unique_header("Access-Control-Allow-Origin", "*")
 }
 
@@ -77,7 +77,7 @@ fn request_handler<EnvT>(
                 env_guard.log(
                     &format!("{}: {}", request.method(), request.raw_url())
                 );
-                env_guard.log(&format!("404: No route"));
+                env_guard.log("404: No route");
                 Response::empty_404()
             }
         )

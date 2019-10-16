@@ -6,9 +6,11 @@ macro_rules! use_mod (
 
 macro_rules! try_or (
     ($expr: expr, $fail: expr) => {
-        match $expr {
-            Some(x) => {x},
-            None => {$fail},
+        if let Some(x) = $expr {
+            x
+        }
+        else {
+            $fail
         }
     }
 );

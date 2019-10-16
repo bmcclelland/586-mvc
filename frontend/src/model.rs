@@ -4,13 +4,11 @@ use yew::services::fetch::*;
 use yew::services::storage::*;
 
 pub enum View {
-    NullView,
-    ProjectsView(Vec<Project>),
-    WorkersView(Vec<Worker>),
-    TasksView(Vec<Task>),
+    Null,
+    Projects(Vec<Project>),
+    Workers(Vec<Worker>),
+    Tasks(Vec<Task>),
 }
-
-pub use View::*;
 
 pub struct Inputs {
     pub project_name: ProjectName,
@@ -29,14 +27,14 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(_: (), link: ComponentLink<Self>) -> Self {
+    pub fn new(link: ComponentLink<Self>) -> Self {
         Self {
             fetcher: FetchService::new(),
             storage: StorageService::new(Area::Local),
-            link: link,
+            link,
             debug: vec![],
             task: None,
-            view: NullView,
+            view: View::Null,
             inputs: Inputs {
                 project_name: ProjectName("".into()),
                 worker_name:  WorkerName("".into()),

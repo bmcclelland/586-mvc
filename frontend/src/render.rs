@@ -31,24 +31,24 @@ fn view_buttons(model: &Model) -> Html<Model> {
         
 fn view_view(model: &Model) -> Html<Model> {
     match &model.view {
-        NullView => html! {
+        View::Null=> html! {
             <div>
                 <p>{ "(No view)" }</p>
             </div>
         },
-        ProjectsView(projects) => html! {
+        View::Projects(projects) => html! {
             <div>
                 <p>{"PROJECTS: "}</p>
                 <ul>{ for projects.iter().map(view_project) }</ul>
             </div>
         },
-        WorkersView(workers) => html! {
+        View::Workers(workers) => html! {
             <div>
                 <p>{"WORKERS: "}</p>
                 <ul>{ for workers.iter().map(view_worker) }</ul>
             </div>
         },
-        TasksView(tasks) => html! {
+        View::Tasks(tasks) => html! {
             <div>
                 <p>{"TASKS: "}</p>
                 <ul>{ for tasks.iter().map(view_task) }</ul>

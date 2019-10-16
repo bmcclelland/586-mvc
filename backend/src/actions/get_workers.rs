@@ -6,6 +6,6 @@ impl Action for GetWorkersAction {
     }
 
     fn execute(&self, env: &mut dyn Model) -> Box<dyn Serialize> {
-        return Box::new(env.get_workers());
+        Box::new(env.get_workers())
     }
 }

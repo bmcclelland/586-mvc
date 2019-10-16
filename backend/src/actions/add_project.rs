@@ -9,7 +9,7 @@ impl Action for AddProjectAction {
         let project_id = env.add_project(NewProject{
             project_name: self.0.project_name.clone()
         });
-        return Box::new(project_id);
+        Box::new(project_id)
     }
 }
 
@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn add_project() {
-        let model = &mut Env::new();
+        let model = &mut Env::default();
         
         let project_name = ProjectName("test_project".into());
         let action = AddProjectAction(AddProjectParams {

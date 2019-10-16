@@ -9,7 +9,7 @@ impl Action for AddWorkerAction {
         let worker_id = env.add_worker(NewWorker{
             worker_name: self.0.worker_name.clone()
         });
-        return Box::new(worker_id);
+        Box::new(worker_id)
     }
 }
 
@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn add_worker() {
-        let model = &mut Env::new();
+        let model = &mut Env::default();
         
         let count_before = model.get_workers().len();
         let worker_name = WorkerName("test".into());
