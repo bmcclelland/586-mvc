@@ -4,8 +4,7 @@ use rouille::{ router, Response, Request, start_server };
 use std::sync::RwLock;
 use erased_serde::Serialize;
 
-pub fn serve<EnvT>(env: EnvT) -> !
-    where EnvT: 'static+Logger+Model
+pub fn serve(env: impl 'static+Model+Logger) -> !
 {
     let addr = "0.0.0.0:8001"; // TODO hardcoded
     start_server(addr, request_handler(env)); 
@@ -51,11 +50,8 @@ fn handle_action(
         .with_unique_header("Access-Control-Allow-Origin", "*")
 }
 
-fn request_handler<EnvT>(
-    env: EnvT
-    ) 
+fn request_handler(env: impl Model+Logger)
     -> impl Fn(&Request) -> Response
-    where EnvT: Model+Logger
 {
     let env = RwLock::new(env);
 
