@@ -3,7 +3,7 @@
 #[macro_use] extern crate diesel;
 
 pub mod prod;
-pub mod test;
+//pub mod test;
 pub mod server;
 pub mod db;
 pub mod schema;

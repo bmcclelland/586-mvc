@@ -5,8 +5,8 @@ impl Action for DeleteProjectAction {
         perms!(DeleteProject)
     }
 
-    fn execute(&self, env: &mut dyn Model) -> Box<dyn Serialize> {
-        let result: bool = env.delete_project(self.0.project_id);
-        Box::new(result)
+    fn execute(&self, model: &mut Model) -> AppResult<Box<dyn Serialize>> {
+        let result = model.delete_project(self.0.project_id)?;
+        Ok(Box::new(result))
     }
 }

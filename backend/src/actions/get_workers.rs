@@ -5,7 +5,7 @@ impl Action for GetWorkersAction {
         perms!(ReadWorker)
     }
 
-    fn execute(&self, env: &mut dyn Model) -> Box<dyn Serialize> {
-        Box::new(env.get_workers())
+    fn execute(&self, model: &mut Model) -> AppResult<Box<dyn Serialize>> {
+        Ok(Box::new(model.get_workers()?))
     }
 }

@@ -1,9 +1,17 @@
-use serde::Serialize;
-use serde::Deserialize;
+use serde::{Serialize,Deserialize};
+use failure::{Fail,Error};
 
 pub trait Inc {
     fn inc(&mut self);
 }
+
+#[derive(Serialize,Deserialize,Fail,Debug)]
+pub enum AppError {
+    #[fail(display = "not found")]
+    NotFound,
+}
+
+pub type AppResult<T> = Result<T,Error>;
 
 newtype!(WorkerName:  String);
 newtype!(TaskName:    String);

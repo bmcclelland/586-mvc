@@ -23,8 +23,9 @@ routable_actions!(
 use erased_serde::Serialize;
 use serde::Deserialize;
 use crate::data::*;
-use crate::traits::*;
+//use crate::traits::*;
 use crate::perms::*;
+use crate::prod::Model;
 use common::*;
 
 use rouille::{
@@ -44,11 +45,11 @@ fn try_json<T>(request: &Request) -> Option<T>
 
 // Gets a T out of a dyn Serialize, if you're right about the T.
 // This is needed to test Action::execute.
-#[cfg(test)]
-fn round_trip<T>(t: Box<dyn Serialize>) -> T
-    where T: for<'de> Deserialize<'de>
-{
-    let json = serde_json::to_string(&*t).unwrap();
-    serde_json::from_str(&json).unwrap()
-}
+//#[cfg(test)]
+//fn round_trip<T>(t: Box<dyn Serialize>) -> T
+//    where T: for<'de> Deserialize<'de>
+//{
+//    let json = serde_json::to_string(&*t).unwrap();
+//    serde_json::from_str(&json).unwrap()
+//}
 

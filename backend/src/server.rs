@@ -1,10 +1,11 @@
 use crate::traits::*;
 use crate::actions::lookup_action_fn;
+use crate::prod::Model;
 use rouille::{ router, Response, Request, start_server };
 use std::sync::RwLock;
-use erased_serde::Serialize;
+use crate::db;
 
-pub fn serve(env: impl 'static+Model+Logger) -> !
+pub fn serve(env: impl 'static+Logger) -> !
 {
     let addr = "0.0.0.0:8001"; // TODO hardcoded
     start_server(addr, request_handler(env)); 
@@ -12,7 +13,7 @@ pub fn serve(env: impl 'static+Model+Logger) -> !
              
 // TODO
 fn validate_action(
-    _env: &(impl Model+Logger),
+    _env: &(impl Logger),
     _action: &dyn Action,
     )
     -> Option<()>
@@ -21,7 +22,7 @@ fn validate_action(
 }
 
 fn handle_action(
-    env: &mut (impl Model+Logger),
+    env: &mut (impl Logger),
     action_name: &str, 
     request: &Request
     )
@@ -43,14 +44,25 @@ fn handle_action(
         env.log("400: Failed to validate");
         return Response::empty_400();
     });
+
+    let mut model = Model::new(db::open());
         
-    let response_data : Box<dyn Serialize> = action.execute(env);
-    env.log("200: Responding");
-    Response::json(&response_data)
-        .with_unique_header("Access-Control-Allow-Origin", "*")
+    match action.execute(&mut model) {
+        Ok(response_data) => {
+            env.log("200: Responding");
+            Response::json(&response_data)
+                .with_unique_header("Access-Control-Allow-Origin", "*")
+        }
+        Err(err) => {
+            env.log("200: Responding with error");
+            Response::json(&format!("Error: {}", err))
+                .with_unique_header("Access-Control-Allow-Origin", "*")
+
+        }
+    }
 }
 
-fn request_handler(env: impl Model+Logger)
+fn request_handler(env: impl Logger)
     -> impl Fn(&Request) -> Response
 {
     let env = RwLock::new(env);
