@@ -6,8 +6,9 @@ impl Action for AddProjectAction {
     }
 
     fn execute(&self, model: &mut Model) -> AppResult<Box<dyn Serialize>> {
-        let project_id = model.add_project(NewProject{
-            project_name: self.0.project_name.clone()
+        let project_id = model.add_project(Project{
+            id: ProjectID::default(),
+            name: self.0.name.clone(),
         })?;
         Ok(Box::new(project_id))
     }

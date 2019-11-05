@@ -77,7 +77,7 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
         Msg::AddProject => {
             model.debug.push("AddProject");
             let params = AddProjectParams {
-                project_name: model.inputs.project_name.clone(),
+                name: model.inputs.project_name.clone(),
             };
             let req = json_request(&params, "add_project");
             fetch!(model, req, |_project_id: ProjectID| {
@@ -88,7 +88,7 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
         Msg::AddWorker => {
             model.debug.push("AddWorker");
             let params = AddWorkerParams {
-                worker_name: model.inputs.worker_name.clone(),
+                name: model.inputs.worker_name.clone(),
             };
             let req = json_request(&params, "add_worker");
             fetch!(model, req, |_worker_id: WorkerID| {

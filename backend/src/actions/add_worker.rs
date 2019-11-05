@@ -6,8 +6,9 @@ impl Action for AddWorkerAction {
     }
 
     fn execute(&self, model: &mut Model) -> AppResult<Box<dyn Serialize>> {
-        let worker_id = model.add_worker(NewWorker{
-            worker_name: self.0.worker_name.clone()
+        let worker_id = model.add_worker(Worker{
+            id: WorkerID::default(),
+            name: self.0.name.clone(),
         })?;
         Ok(Box::new(worker_id))
     }

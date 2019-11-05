@@ -6,9 +6,11 @@ impl Action for AddTaskAction {
     }
 
     fn execute(&self, model: &mut Model) -> AppResult<Box<dyn Serialize>> {
-        let task_id = model.add_task(NewTask{
-            task_name: self.0.task_name.clone(),
+        let task_id = model.add_task(Task{
+            id: TaskID::default(),
+            name: self.0.name.clone(),
             project_id: self.0.project_id,
+            worker_id: None,
         })?;
         Ok(Box::new(task_id))
     }

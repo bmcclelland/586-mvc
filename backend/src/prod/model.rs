@@ -1,21 +1,15 @@
-//use crate::traits::Model;
-use crate::data::*;
 use common::*;
-use crate::schema::*;
-use crate::*;
-//use super::*;
+use common::schema::*;
+use crate::db::Insert;
 use diesel::prelude::*;
-
-macro_rules! last_id (
-    ($table: ident :: $field: ident, $db_con: expr) => {
-        $table::table.select($table::$field)
-            .order($table::$field.desc())
-            .first($db_con)
-    }
-);
 
 pub struct Model {
     db: SqliteConnection,
+}
+
+pub struct WorkerTaskCount {
+    worker_id: WorkerID,
+    task_count: usize,
 }
 
 impl Model {
@@ -25,56 +19,44 @@ impl Model {
         }
     }
 
-    pub fn add_project(&mut self, item: NewProject) -> AppResult<ProjectID> {
-        diesel::insert_into(projects::table)
-            .values(&item)
-            .execute(&self.db)?;
-        let result = last_id!(tasks::task_id, &self.db)?;
-        Ok(result)
+    pub fn add_project(&mut self, project: Project) -> AppResult<ProjectID> {
+        project.insert(&self.db)
     }
 
-    pub fn add_worker(&mut self, item: NewWorker) -> AppResult<WorkerID> {
-        diesel::insert_into(workers::table)
-            .values(&item)
-            .execute(&self.db)?;
-        let result = last_id!(tasks::task_id, &self.db)?;
-        Ok(result)
+    pub fn add_worker(&mut self, worker: Worker) -> AppResult<WorkerID> {
+        worker.insert(&self.db)
     }
     
-    pub fn add_task(&mut self, item: NewTask) -> AppResult<TaskID> {
-        diesel::insert_into(tasks::table)
-            .values(&item)
-            .execute(&self.db)?;
-        let result = last_id!(tasks::task_id, &self.db)?;
-        Ok(result)
+    pub fn add_task(&mut self, task: Task) -> AppResult<TaskID> {
+        task.insert(&self.db)
     }
     
     pub fn delete_project(&self, project_id: ProjectID) -> AppResult<()> {
-        let _deleted_rows = diesel::delete(projects::table)
-            .filter(projects::project_id.eq(project_id))
+        diesel::delete(projects::table)
+            .filter(projects::id.eq(project_id))
             .execute(&self.db)?;
-        Ok(()) //deleted_rows >= 1)
+        Ok(())
     }
     
     pub fn delete_worker(&self, worker_id: WorkerID) -> AppResult<()> {
-        let _deleted_rows = diesel::delete(workers::table)
-            .filter(workers::worker_id.eq(worker_id))
+        diesel::delete(workers::table)
+            .filter(workers::id.eq(worker_id))
             .execute(&self.db)?;
-        Ok(()) //deleted_rows >= 1)
+        Ok(())
     }
 
     pub fn get_projects(&self) -> AppResult<Vec<Project>> {
-        let result = projects::table.load::<Project>(&self.db)?;
+        let result = projects::table.load(&self.db)?;
         Ok(result)
     }
     
     pub fn get_workers(&self) -> AppResult<Vec<Worker>> {
-        let result = workers::table.load::<Worker>(&self.db)?;
+        let result = workers::table.load(&self.db)?;
         Ok(result)
     }
     
     pub fn get_tasks(&self) -> AppResult<Vec<Task>> {
-        let result = tasks::table.load::<Task>(&self.db)?;
+        let result = tasks::table.load(&self.db)?;
         Ok(result)
     }
     
@@ -91,40 +73,45 @@ impl Model {
     }
     
     pub fn get_project_tasks(&self, project_id: ProjectID) -> AppResult<Vec<Task>> {
-        let result = tasks::table.filter(tasks::project_id.eq(project_id))
-            .get_results::<Task>(&self.db)?;
+        let project: Project = projects::table.find(project_id).first(&self.db)?;
+        let result = Task::belonging_to(&project).load(&self.db)?;
         Ok(result)
     }
 
     pub fn get_worker_tasks(&self, worker_id: WorkerID) -> AppResult<Vec<Task>> {
-        let mut rows = tasks::table
-            .inner_join(workertasks::table.on(
-                workertasks::task_id.eq(tasks::task_id)
-                .and(workertasks::worker_id.eq(worker_id))
-                ))
-            .select((tasks::task_id, tasks::task_name, tasks::project_id))
-            .load::<(TaskID,TaskName,ProjectID)>(&self.db)?;
-
-        let row_to_task = |(task_id, task_name, project_id)| {
-            Task{ task_id, task_name, project_id }
-        };
-
-        Ok(rows.drain(..).map(row_to_task).collect())
+        let worker: Worker = workers::table.find(worker_id).first(&self.db)?;
+        let result = Task::belonging_to(&worker).load(&self.db)?;
+        Ok(result)
     }
     
-    pub fn assign_task(&mut self, item: NewWorkerTask) -> AppResult<()> {
-        diesel::insert_into(workertasks::table)
-            .values(&item)
-            .execute(&self.db)?;
+    pub fn assign_task(&mut self, task_id: TaskID, worker_id: WorkerID) -> AppResult<()> {
+        let mut task: Task = tasks::table.find(task_id).first(&self.db)?;
+        task.worker_id = Some(worker_id);
+        task.save_changes::<Task>(&self.db)?;            
         Ok(())
     }
 
-    pub fn unassign_task(&mut self, item: NewWorkerTask) -> AppResult<()> {
-        let is_same = workertasks::worker_id.eq(item.worker_id)
-            .and(workertasks::task_id.eq(item.task_id));
-        diesel::delete(workertasks::table)
-            .filter(is_same)
-            .execute(&self.db)?;
+    pub fn unassign_task(&mut self, task_id: TaskID) -> AppResult<()> {
+        let mut task: Task = tasks::table.find(task_id).first(&self.db)?;
+        task.worker_id = None; 
+        task.save_changes::<Task>(&self.db)?;            
         Ok(())
+    }
+
+    pub fn worker_taskcount(&mut self)
+        -> AppResult<Vec<WorkerTaskCount>>
+    {
+        workers::table
+            .load(&self.db)?
+            .into_iter()
+            .map(|w: Worker| -> AppResult<WorkerTaskCount> {
+                let tasks: Vec<Task> = 
+                    Task::belonging_to(&w).load(&self.db)?;
+                Ok(WorkerTaskCount {
+                    worker_id: w.id,
+                    task_count: tasks.len(),
+                })
+            })
+            .collect()
     }
 }

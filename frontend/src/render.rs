@@ -74,8 +74,8 @@ fn view_stuff(s: &'static str) -> Html<Model> {
 }
 
 fn view_project(project: &Project) -> Html<Model> {
-    let project_name = project.project_name.clone();
-    let project_id = project.project_id;
+    let project_name = project.name.clone();
+    let project_id = project.id;
 
     html! {
         <li>
@@ -87,8 +87,8 @@ fn view_project(project: &Project) -> Html<Model> {
 }
 
 fn view_worker(worker: &Worker) -> Html<Model> {
-    let worker_name = worker.worker_name.clone();
-    let worker_id = worker.worker_id;
+    let worker_name = worker.name.clone();
+    let worker_id = worker.id;
 
     html! {
         <li>
@@ -102,8 +102,8 @@ fn view_worker(worker: &Worker) -> Html<Model> {
 fn view_task(task: &Task) -> Html<Model> {
     html! {
         <li>
-            <span>{ task.task_id.0 }{": "}</span> 
-            <span>{ task.task_name.0.clone() }{": "}</span>
+            <span>{ task.id.0 }{": "}</span> 
+            <span>{ task.name.0.clone() }{": "}</span>
             <span>{ task.project_id.0 }</span>
         </li>
     }

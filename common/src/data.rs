@@ -1,5 +1,7 @@
 use serde::{Serialize,Deserialize};
 use failure::{Fail,Error};
+use crate::schema::*;
+use diesel::prelude::*;
 
 pub trait Inc {
     fn inc(&mut self);
@@ -21,45 +23,43 @@ newtype_id!(WorkerID:    i32);
 newtype_id!(TaskID:      i32);
 newtype_id!(ProjectID:   i32);
 
-#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize)]
+#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize,Associations,Identifiable, AsChangeset, Insertable)]
 pub struct Project {
-    pub project_id:   ProjectID,
-    pub project_name: ProjectName,
+    pub id:   ProjectID,
+    pub name: ProjectName,
 }
 
-#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize)]
+#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize,Associations,Identifiable, AsChangeset, Insertable)]
+#[belongs_to(Project)]
+#[belongs_to(Worker)]
 pub struct Task {
-    pub task_id:    TaskID,
-    pub task_name:  TaskName,
+    pub id:    TaskID,
+    pub name:  TaskName,
     pub project_id: ProjectID,
+    pub worker_id:  Option<WorkerID>,
 }
 
-#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize)]
+#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize,Associations,Identifiable, AsChangeset, Insertable)]
 pub struct Worker {
-    pub worker_id:   WorkerID,
-    pub worker_name: WorkerName,
-}
-
-#[derive(Debug,Clone,PartialEq,Queryable,Serialize,Deserialize)]
-pub struct WorkerTask {
-    pub worker_id: WorkerID,
-    pub task_id:   TaskID,
+    pub id:   WorkerID,
+    pub name: WorkerName,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct AddProjectParams {
-    pub project_name: ProjectName,
+    pub name: ProjectName,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct AddWorkerParams {
-    pub worker_name: WorkerName,
+    pub name: WorkerName,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct AddTaskParams {
-    pub task_name: TaskName,
+    pub name: TaskName,
     pub project_id: ProjectID,
+    pub worker_id: Option<WorkerID>,
 }
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
