@@ -7,6 +7,6 @@ impl Action for DeleteWorkerAction {
 
     fn execute(&self, env: &mut dyn Model) -> Box<dyn Serialize> {
         let result: bool = env.delete_worker(self.0.worker_id);
-        return Box::new(result);
+        Box::new(result)
     }
 }

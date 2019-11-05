@@ -17,8 +17,8 @@ pub trait DBType : Clone {
 impl DBType for Project {
     type Key = ProjectID;
     type New = NewProject;
-    fn make(new: &NewProject, key: &ProjectID) -> Project {
-        Project {
+    fn make(new: &NewProject, key: &ProjectID) -> Self {
+        Self {
             project_id: *key,
             project_name: new.project_name.clone(),
         }
@@ -28,8 +28,8 @@ impl DBType for Project {
 impl DBType for Worker {
     type Key = WorkerID;
     type New = NewWorker;
-    fn make(new: &NewWorker, key: &WorkerID) -> Worker {
-        Worker {
+    fn make(new: &NewWorker, key: &WorkerID) -> Self {
+        Self {
             worker_id: *key,
             worker_name: new.worker_name.clone(),
         }
@@ -39,8 +39,8 @@ impl DBType for Worker {
 impl DBType for Task {
     type Key = TaskID;
     type New = NewTask;
-    fn make(new: &NewTask, key: &TaskID) -> Task {
-        Task {
+    fn make(new: &NewTask, key: &TaskID) -> Self {
+        Self {
             task_id: *key,
             task_name: new.task_name.clone(),
             project_id: new.project_id,
@@ -57,26 +57,26 @@ pub struct Man<T> where T: DBType {
 impl<T> Man<T> where T: DBType 
 {
     pub fn new(k: &T::Key) -> Self {
-        return Self {
+        Self {
             data: HashMap::new(),
             next_k: *k,
-        };
+        }
     }
     
-    pub fn insert(&mut self, item: T::New) -> T::Key {
+    pub fn insert(&mut self, item: &T::New) -> T::Key {
         let k = self.next_k;
         let v = T::make(&item, &k);
         self.data.insert(k, v);
         self.next_k.inc();
-        return k;
+        k
     }
 
     pub fn get(&self, k: T::Key) -> Option<&T> {
-        return self.data.get(&k);
+        self.data.get(&k)
     }
 
     pub fn list(&self) -> Vec<T> {
-        return self.data.values().cloned().collect();
+        self.data.values().cloned().collect()
     }
 }
 
@@ -88,13 +88,13 @@ pub struct Env {
     pub(super) workertasks: HashSet<(TaskID,WorkerID)>,
 }
 
-impl Env {
-    pub fn new() -> Env {
-        return Env {
+impl Default for Env {
+    fn default() -> Self {
+        Self {
             projects: Man::new(&ProjectID(1)),
             workers:  Man::new(&WorkerID(1)),
             tasks:    Man::new(&TaskID(1)),
             workertasks: HashSet::new(),
-        };
+        }
     }
 }

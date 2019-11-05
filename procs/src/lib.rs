@@ -3,23 +3,19 @@ use proc_macro::*;
 
 fn parse_ident(ts: TokenStream) -> String {
     let ident: syn::Ident = syn::parse(ts).unwrap();
-    return format!("{}", ident).into();
+    format!("{}", ident)
 }
 
 fn types_for(mod_name: &str) -> (String,String) {
-    let pascal = pascal_case(mod_name);
-    return (
-        format!("{}Action", pascal), 
-        format!("{}Params", pascal)
-    );
+    let s = pascal_case(mod_name);
+    (format!("{}Action", s), format!("{}Params", s))
 }
 
 fn pascal_case(s: &str) -> String {
-    let mut t : String = "".into();
-    let mut iter = s.chars();
-
+    let mut t = String::default();
     let mut caps = true;
-    while let Some(c) = iter.next() {
+
+    for c in s.chars() {
         if c == '_' {
             caps = true;
         }
@@ -33,7 +29,7 @@ fn pascal_case(s: &str) -> String {
         }
     }
 
-    return t;
+    t
 }
 
 #[proc_macro]

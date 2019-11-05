@@ -128,17 +128,17 @@ pub fn update(model: &mut Model, msg: Msg) -> ShouldRender {
         }
         Msg::ViewProjects(projects) => {
             model.debug.push("ViewProjects");
-            model.view = ProjectsView(projects);
+            model.view = View::Projects(projects);
             model.task = None;
         }
         Msg::ViewWorkers(body) => {
             model.debug.push("ViewWorkers");
-            model.view = WorkersView(body);
+            model.view = View::Workers(body);
             model.task = None;
         }
         Msg::ViewTasks(body) => {
             model.debug.push("ViewTasks");
-            model.view = TasksView(body);
+            model.view = View::Tasks(body);
             model.task = None;
         }
         Msg::GetProjects => {

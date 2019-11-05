@@ -9,15 +9,15 @@ use super::*;
 
 impl Model for Env {
     fn add_project(&mut self, item: NewProject) -> ProjectID {
-        self.projects.insert(item)
+        self.projects.insert(&item)
     }
 
     fn add_worker(&mut self, item: NewWorker) -> WorkerID {
-        self.workers.insert(item)
+        self.workers.insert(&item)
     }
     
     fn add_task(&mut self, item: NewTask) -> TaskID {
-        self.tasks.insert(item)
+        self.tasks.insert(&item)
     }
     
     fn delete_project(&self, project_id: ProjectID) -> bool {

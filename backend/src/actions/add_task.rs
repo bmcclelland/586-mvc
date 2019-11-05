@@ -10,7 +10,7 @@ impl Action for AddTaskAction {
             task_name: self.0.task_name.clone(),
             project_id: self.0.project_id,
         });
-        return Box::new(task_id);
+        Box::new(task_id)
     }
 }
 
@@ -21,7 +21,7 @@ mod tests {
     
     #[test]
     fn add_task() {
-        let model = &mut Env::new();
+        let model = &mut Env::default();
         
         let project_id = model.add_project(NewProject {
             project_name: ProjectName("test".into()),

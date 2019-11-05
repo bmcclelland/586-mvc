@@ -26,7 +26,7 @@ pub enum PermReq {
 
 impl PermReq {
     // Permission requirements may be satisfied by some set of permissions.
-    pub fn satisfied_by(&self, perms: &Vec<Perm>) -> bool {
+    pub fn satisfied_by(&self, perms: &[Perm]) -> bool {
         use PermReq::*;
         match self {
             And(reqs) => {
